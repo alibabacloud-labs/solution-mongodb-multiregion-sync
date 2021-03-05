@@ -88,31 +88,11 @@ Click "Enter Copy Commands" to execute the following commands.
 wget https://github.com/alibaba/MongoShake/releases/download/release-v2.4.19-20210115/mongo-shake-v2.4.19.tar.gz
 tar zxvf mongo-shake-v2.4.19.tar.gz && mv mongo-shake-v2.4.19 /root/mongoshake && cd /root/mongoshake 
 ```
-Run the `vi collector.conf` command to modify the collector.conf configuration file of MongoShake. The following table describes the parameters that you must configure to synchronize data between ApsaraDB for MongoDB instances.
+Run the `vi collector.conf` command to modify the collector.conf configuration file of MongoShake. The following parameters describe the parameters that you must configure to synchronize data between ApsaraDB for MongoDB instances.
 
-| Parameter | Description | Example |
-| :--- | :--- | :--- |
-| mongo_urls | The connection string URI of the source ApsaraDB for MongoDB instance.
-**Note**
-- We recommend that you use a VPC endpoint to minimize network latency.
-- For more information about the format of a connection string URI, see [Overview of replica set instance connections](https://www.alibabacloud.com/help/doc-detail/44623.htm#concept-44623-zh).
- | `mongo_urls = mongodb://root:Ftxxxxxx@dds-bpxxxxxxxx.mongodb.rds.aliyuncs.com:3717,dds-bpxxxxxxxx.mongodb.rds.aliyuncs.com:3717`
-**Note** The password cannot contain at signs (@). Otherwise, the connection may fail. |
-| tunnel.address | The connection string URI of the destination ApsaraDB for MongoDB instance.
-**Note**
-- We recommend that you use a VPC endpoint to minimize network latency.
-- For more information about the format of a connection string URI, see [Overview of replica set instance connections](https://www.alibabacloud.com/help/doc-detail/44623.htm#concept-44623-zh).
- | `tunnel.address = mongodb://root:Ftxxxxxx@dds-bpxxxxxxxx.mongodb.rds.aliyuncs.com:3717,dds-bpxxxxxxxx.mongodb.rds.aliyuncs.com:3717`
-**Note** The password cannot contain at signs (@). Otherwise, the connection may fail. |
-| sync_mode | The data synchronization method. Valid values:
-- all: performs both full data synchronization and incremental data synchronization.
-- full: performs only full data synchronization.
-- incr: performs only incremental data synchronization.
-
-
-**Note** The default value is incr. | `sync_mode = all` |
-
-
+- mongo_urls: The connection string URI of the source ApsaraDB for MongoDB instance. We recommend that you use a VPC endpoint to minimize network latency.
+- tunnel.address: The connection string URI of the destination ApsaraDB for MongoDB instance. Here in this demo, you need replace with the public IP endpoint of the target MongoDB described in Step 3.
+- sync_mode: The data synchronization method. We set to "all" here to performs both full data synchronization and incremental data synchronization.
 
 Note For more information about all parameters in the collector.conf file, see the [https://www.alibabacloud.com/help/doc-detail/122621.htm?spm=a2c63.p38356.b99.149.83c95d51SHnDEP#section-zkn-lqg-z79](https://www.alibabacloud.com/help/doc-detail/122621.htm?spm=a2c63.p38356.b99.149.83c95d51SHnDEP#section-zkn-lqg-z79) of this topic.
 

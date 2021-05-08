@@ -33,33 +33,33 @@ data "alicloud_zones" "region2" {
 # Resource: VPC at region #1
 resource "alicloud_vpc" "vpc_region1" {
   provider   = alicloud.region1
-  name       = "vpc-test"
+  vpc_name   = "vpc-test"
   cidr_block = "172.16.0.0/16"
 }
 
 # Resource: VSW at region #1
 resource "alicloud_vswitch" "vsw_region1" {
-  provider          = alicloud.region1
-  vpc_id            = alicloud_vpc.vpc_region1.id
-  cidr_block        = "172.16.0.0/24"
-  availability_zone = data.alicloud_zones.region1.zones[0].id
-  name              = "vsw-test"
+  provider     = alicloud.region1
+  vpc_id       = alicloud_vpc.vpc_region1.id
+  cidr_block   = "172.16.0.0/24"
+  zone_id      = data.alicloud_zones.region1.zones[0].id
+  vswitch_name = "vsw-test"
 }
 
 # Resource: VPC at region #2
 resource "alicloud_vpc" "vpc_region2" {
   provider   = alicloud.region2
-  name       = "vpc-test"
+  vpc_name   = "vpc-test"
   cidr_block = "172.16.0.0/16"
 }
 
 # Resource: VSW at region #2
 resource "alicloud_vswitch" "vsw_region2" {
-  provider          = alicloud.region2
-  vpc_id            = alicloud_vpc.vpc_region2.id
-  cidr_block        = "172.16.0.0/24"
-  availability_zone = data.alicloud_zones.region2.zones[0].id
-  name              = "vsw-test"
+  provider     = alicloud.region2
+  vpc_id       = alicloud_vpc.vpc_region2.id
+  cidr_block   = "172.16.0.0/24"
+  zone_id      = data.alicloud_zones.region2.zones[0].id
+  vswitch_name = "vsw-test"
 }
 
 # Security group at region #1

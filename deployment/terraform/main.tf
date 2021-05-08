@@ -66,16 +66,42 @@ resource "alicloud_vswitch" "vsw_region2" {
 resource "alicloud_security_group" "sg_region1" {
   provider    = alicloud.region1
   name        = "sg_1"
-  description = "sg_solution_multiregion_mongodb_sync"
+  description = "sg_solution_multiregion_mongodb_sync_region_1"
   vpc_id      = alicloud_vpc.vpc_region1.id
+}
+
+# Allow SSH connection to ECS
+resource "alicloud_security_group_rule" "allow_ssh_22_region1" {
+  provider          = alicloud.region1
+  type              = "ingress"
+  ip_protocol       = "tcp"
+  nic_type          = "intranet"
+  policy            = "accept"
+  port_range        = "22/22"
+  priority          = 1
+  security_group_id = alicloud_security_group.sg_region1.id
+  cidr_ip           = "0.0.0.0/0"
 }
 
 # Security group at region #2
 resource "alicloud_security_group" "sg_region2" {
   provider    = alicloud.region2
   name        = "sg_2"
-  description = "sg_solution_multiregion_mongodb_sync"
+  description = "sg_solution_multiregion_mongodb_sync_region_2"
   vpc_id      = alicloud_vpc.vpc_region2.id
+}
+
+# Allow SSH connection to ECS
+resource "alicloud_security_group_rule" "allow_ssh_22_region2" {
+  provider          = alicloud.region2
+  type              = "ingress"
+  ip_protocol       = "tcp"
+  nic_type          = "intranet"
+  policy            = "accept"
+  port_range        = "22/22"
+  priority          = 1
+  security_group_id = alicloud_security_group.sg_region2.id
+  cidr_ip           = "0.0.0.0/0"
 }
 
 # ECS at region #1
@@ -89,7 +115,9 @@ resource "alicloud_instance" "ecs_region1" {
   system_disk_name           = "test_foo_system_disk_name"
   system_disk_description    = "test_foo_system_disk_description"
   image_id                   = "aliyun_2_1903_x64_20G_alibase_20200904.vhd"
-  instance_name              = "test_foo"
+  instance_name              = "ecs_at_region_1"
+  password                   = "N1cetest" ## Please change accordingly
+  instance_charge_type       = "PostPaid"
   vswitch_id                 = alicloud_vswitch.vsw_region1.id
   internet_max_bandwidth_out = 10
   data_disks {
@@ -108,13 +136,16 @@ resource "alicloud_instance" "ecs_region2" {
   security_groups = alicloud_security_group.sg_region2.*.id
 
   # series III
-  instance_type           = "ecs.t5-lc1m1.small"
-  system_disk_category    = "cloud_efficiency"
-  system_disk_name        = "test_foo_system_disk_name"
-  system_disk_description = "test_foo_system_disk_description"
-  image_id                = "aliyun_2_1903_x64_20G_alibase_20200904.vhd"
-  instance_name           = "test_foo"
-  vswitch_id              = alicloud_vswitch.vsw_region2.id
+  instance_type              = "ecs.t5-lc1m1.small"
+  system_disk_category       = "cloud_efficiency"
+  system_disk_name           = "test_foo_system_disk_name"
+  system_disk_description    = "test_foo_system_disk_description"
+  image_id                   = "aliyun_2_1903_x64_20G_alibase_20200904.vhd"
+  instance_name              = "ecs_at_region_2"
+  password                   = "N1cetest" ## Please change accordingly
+  instance_charge_type       = "PostPaid"
+  vswitch_id                 = alicloud_vswitch.vsw_region2.id
+  internet_max_bandwidth_out = 10
   data_disks {
     name        = "disk2"
     size        = 20
@@ -132,7 +163,7 @@ resource "alicloud_mongodb_instance" "mongodb_region1" {
   db_instance_class   = "dds.mongo.mid"
   db_instance_storage = 10
   vswitch_id          = alicloud_vswitch.vsw_region1.id
-  security_ip_list    = ["127.0.0.1"]
+  account_password    = "N1cetest" ## Please change accordingly
 }
 
 # Resource: MongoDB (Replica Set) at region #2
@@ -142,5 +173,5 @@ resource "alicloud_mongodb_instance" "mongodb_region2" {
   db_instance_class   = "dds.mongo.mid"
   db_instance_storage = 10
   vswitch_id          = alicloud_vswitch.vsw_region2.id
-  security_ip_list    = ["127.0.0.1"]
+  account_password    = "N1cetest" ## Please change accordingly
 }
